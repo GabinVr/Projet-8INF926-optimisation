@@ -1,3 +1,5 @@
+#!/usr/bin/env julia
+
 using Printf
 
 function power_turbine(Q, H, turbine_id)
@@ -75,6 +77,7 @@ function optimize_turbines(Qtotal, h_amont)
                 if 1 <= j <= n_states && isfinite(dp[j, t + 1])
                     head = h_net(h_amont, h_aval, q_turbine)
                     power = power_turbine(q_turbine, head, t) + dp[j, t + 1]
+                    println(power_turbine(q_turbine, head, t))
                     if power > max_power
                         max_power = power
                         best_decision = q_turbine
@@ -99,7 +102,7 @@ function optimize_turbines(Qtotal, h_amont)
     return solution, dp[end, 1], q_target
 end
 
-parse_fr_float(s::AbstractString) = parse(Float64, replace(strip(s), ',' => '.'))
+# parse_fr_float(s::AbstractString) = parse(Float64, replace(strip(s), ',' => '.'))
 
 function evaluate_dataset(csv_path::String; max_rows::Int = 100)
     open(csv_path, "r") do io
@@ -125,20 +128,20 @@ function evaluate_dataset(csv_path::String; max_rows::Int = 100)
 
         for line in eachline(io)
             isempty(strip(line)) && continue
-            cols = split(line, ';')
+            cols = split(line, ',')
             length(cols) < 15 && continue
 
-            q_total = parse_fr_float(cols[2])
-            h_amont = parse_fr_float(cols[5])
-            q1_real = parse_fr_float(cols[6])
-            q2_real = parse_fr_float(cols[8])
-            q3_real = parse_fr_float(cols[10])
-            q4_real = parse_fr_float(cols[12])
-            q5_real = parse_fr_float(cols[14])
+            q_total = parse(Float64, cols[2])
+            h_amont = parse(Float64, cols[5])
+            q1_real = parse(Float64, cols[6])
+            q2_real = parse(Float64, cols[8])
+            q3_real = parse(Float64, cols[10])
+            q4_real = parse(Float64, cols[12])
+            q5_real = parse(Float64, cols[14])
 
-            real_total_power = parse_fr_float(cols[7]) + parse_fr_float(cols[9]) +
-                               parse_fr_float(cols[11]) + parse_fr_float(cols[13]) +
-                               parse_fr_float(cols[15])
+            real_total_power = parse(Float64, cols[7]) + parse(Float64, cols[9]) +
+                               parse(Float64, cols[11]) + parse(Float64, cols[13]) +
+                               parse(Float64, cols[15])
 
             t0_ns = time_ns()
             pred_flows, pred_power, q_used = optimize_turbines(q_total, h_amont)
@@ -234,7 +237,7 @@ function main()
         return
     end
 
-    default_csv = normpath(joinpath(@__DIR__, "..", "..", "DataProjet2026.csv"))
+    default_csv = normpath(joinpath(@__DIR__, "data", "DataProjet2026.csv"))
     csv_path = isempty(ARGS) ? default_csv : ARGS[1]
     max_rows = length(ARGS) >= 2 ? parse(Int, ARGS[2]) : 100
 
