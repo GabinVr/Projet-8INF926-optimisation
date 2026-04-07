@@ -33,7 +33,7 @@ def generate_param_file(case_id, Qtotal, h_amont, output_dir):
         f.write("DISPLAY_STATS BBE ( SOL ) OBJ CONS_H\n")
         f.write(f"STATS_FILE stats_case_{case_id}.txt BBE ( SOL ) OBJ\n")
 
-        f.write(f"SOLUTION_FILE solution_case_{case_id}.txt\n")
+        f.write(f"SOLUTION_FILE params/solution_case_{case_id}.txt\n")
     
     return param_file
 
