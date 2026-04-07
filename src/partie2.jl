@@ -77,7 +77,6 @@ function optimize_turbines(Qtotal, h_amont)
                 if 1 <= j <= n_states && isfinite(dp[j, t + 1])
                     head = h_net(h_amont, h_aval, q_turbine)
                     power = power_turbine(q_turbine, head, t) + dp[j, t + 1]
-                    println(power_turbine(q_turbine, head, t))
                     if power > max_power
                         max_power = power
                         best_decision = q_turbine
