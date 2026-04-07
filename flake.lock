@@ -1,0 +1,27 @@
+{
+  "nodes": {
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1775590893,
+        "narHash": "sha256-LLp93/JsH7zB1AUuWQVR9RF8416eTGZlQHlHwe1cKh0=",
+        "owner": "SkohTV",
+        "repo": "nixpkgs",
+        "rev": "f195f3c094209bbe0cd3e921bbdb6e88218624c4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SkohTV",
+        "ref": "init-nomad-gerad",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
