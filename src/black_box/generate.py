@@ -22,7 +22,7 @@ def generate_param_file(case_id, Qtotal, h_amont, output_dir):
         f.write(f"UPPER_BOUND ( 160 160 160 160 160 - - )\n")
         f.write(f"FIXED_VARIABLE ( - - - - - {Qtotal:.2f} {h_amont:.2f} )\n")
 
-        f.write("MAX_BB_EVAL 500\n")
+        f.write("MAX_BB_EVAL 50\n")
 
         f.write("INITIAL_FRAME_SIZE (160 160 160 160 160 - -)\n")
 
