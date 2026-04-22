@@ -20,7 +20,7 @@ in {
       buildInputs = with nixpkgsFor.${system}; [
         nomad-gerad
         julia
-        (python3.withPackages (ps: [ ps.pandas ps.tkinter ]))
+        (python3.withPackages (ps: [ ps.pandas ps.tkinter ps.matplotlib ]))
       ];
     };
   });
