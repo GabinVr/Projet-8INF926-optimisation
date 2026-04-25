@@ -12,10 +12,17 @@ from matplotlib.figure import Figure
 ### Root
 root = tk.Tk()
 root.attributes('-type', 'dialog')
-root.geometry("600x800") 
+root.geometry("600x900")
 
-frm = ttk.Frame(root, padding=10)
-frm.grid()
+frm = ttk.Frame(root, padding=20)
+frm.grid(row=0, column=0, sticky="nsew")
+
+root.grid_rowconfigure(0, weight=1)
+root.grid_columnconfigure(0, weight=1)
+
+for col in range(6):
+    frm.grid_columnconfigure(col, weight=1)
+
 
 DEFAULT_QTOTAL = "578.01"
 DEFAULT_H_AMONT = "138.90"
@@ -45,34 +52,57 @@ int_validator = root.register(validate(int))
 
 
 ### First row
+params_label = ttk.Label(frm, text="Global Parameters")
+params_label.grid(column=0, row=0, columnspan=6, sticky="w", pady=(0, 4))
 
-ttk.Label(frm, text="Qtotal").grid(column=0, row=0, sticky="e")
-qtotal = ttk.Entry(frm, validate="key", validatecommand=(float_validator, "%P"), width=7)
-qtotal.grid(column=1, row=0)
+ttk.Separator(frm, orient="horizontal").grid(
+    column=0, row=1, columnspan=6, sticky="ew", pady=(0, 8)
+)
+
+ttk.Label(frm, text="Qtotal").grid(column=0, row=2, sticky="e", padx=(0, 6), pady=4)
+qtotal = ttk.Entry(frm, validate="key", validatecommand=(float_validator, "%P"), width=10)
+qtotal.grid(column=1, row=2, sticky="w", pady=4)
 qtotal.insert(-1, DEFAULT_QTOTAL)
 qtotal.bind("<FocusOut>", placeholder(qtotal, DEFAULT_QTOTAL))
 
-
-ttk.Label(frm, text="h_amont").grid(column=0, row=1, sticky="e")
-h_amont = ttk.Entry(frm, validate="key", validatecommand=(float_validator, "%P"), width=7)
-h_amont.grid(column=1, row=1)
+ttk.Label(frm, text="h_amont").grid(column=0, row=3, sticky="e", padx=(0, 6), pady=4)
+h_amont = ttk.Entry(frm, validate="key", validatecommand=(float_validator, "%P"), width=10)
+h_amont.grid(column=1, row=3, sticky="w", pady=4)
 h_amont.insert(-1, DEFAULT_H_AMONT)
 h_amont.bind("<FocusOut>", placeholder(h_amont, DEFAULT_H_AMONT))
 
 
 ### Second row
-ttk.Label(frm, text="Débit min").grid(column=0, row=2, sticky="e")
-ttk.Label(frm, text="Débit max").grid(column=0, row=3, sticky="e")
+ttk.Separator(frm, orient="horizontal").grid(
+    column=0, row=4, columnspan=6, sticky="ew", pady=(12, 8)
+)
+flow_label = ttk.Label(frm, text="Flow Ranges per Channel")
+flow_label.grid(column=0, row=5, columnspan=6, sticky="w", pady=(0, 4))
 
-qX_min = [ttk.Entry(frm, validate="key", validatecommand=(int_validator, "%P"), width=7) for _ in range(1, 6)]
+# Column headers for channels
+for i in range(1, 6):
+    ttk.Label(frm, text=f"Ch. {i}").grid(
+        column=i, row=6, sticky="ew", padx=4, pady=(0, 2)
+    )
+
+ttk.Label(frm, text="Débit min").grid(column=0, row=7, sticky="e", padx=(0, 6), pady=4)
+ttk.Label(frm, text="Débit max").grid(column=0, row=8, sticky="e", padx=(0, 6), pady=4)
+
+qX_min = [
+    ttk.Entry(frm, validate="key", validatecommand=(int_validator, "%P"), width=7)
+    for _ in range(1, 6)
+]
 for idx, itm in enumerate(qX_min):
-    itm.grid(column=idx+1, row=2)
+    itm.grid(column=idx + 1, row=7, sticky="ew", padx=4, pady=4)
     itm.insert(-1, "0")
     itm.bind("<FocusOut>", placeholder(itm, DEFAULT_Q_MIN))
 
-qX_max = [ttk.Entry(frm, validate="key", validatecommand=(int_validator, "%P"), width=7) for _ in range(1, 6)]
+qX_max = [
+    ttk.Entry(frm, validate="key", validatecommand=(int_validator, "%P"), width=7)
+    for _ in range(1, 6)
+]
 for idx, itm in enumerate(qX_max):
-    itm.grid(column=idx+1, row=3)
+    itm.grid(column=idx + 1, row=8, sticky="ew", padx=4, pady=4)
     itm.insert(-1, "160")
     itm.bind("<FocusOut>", placeholder(itm, DEFAULT_Q_MAX))
 
@@ -124,20 +154,42 @@ def compute_20_first():
 
     canvas = FigureCanvasTkAgg(fig, master=root)
     canvas.draw()
-    canvas.get_tk_widget().grid(column=0, row=7)
+    canvas.get_tk_widget().grid(column=0, row=12, columnspan=6, sticky="nsew", pady=(12, 12), padx=(12, 12))
+
 
 
 
 ### Third row
+ttk.Separator(frm, orient="horizontal").grid(
+    column=0, row=9, columnspan=6, sticky="ew", pady=(12, 8)
+)
 
-ttk.Button(frm, text="Compute", command=compute_single).grid(column=0, row=4)
-ttk.Button(frm, text="Compute from Excel", command=compute_20_first).grid(column=1, row=4)
+btn_frame = ttk.Frame(frm)
+btn_frame.grid(column=0, row=10, columnspan=6, sticky="ew")
+btn_frame.grid_columnconfigure(0, weight=1)
+btn_frame.grid_columnconfigure(1, weight=1)
+btn_frame.grid_columnconfigure(2, weight=1)
+
+ttk.Button(btn_frame, text="Compute", command=compute_single).grid(
+    column=0, row=0, sticky="ew", padx=4
+)
+ttk.Button(btn_frame, text="Compute from Excel", command=compute_20_first).grid(
+    column=1, row=0, sticky="ew", padx=4
+)
+ttk.Button(btn_frame, text="Quit", command=root.destroy).grid(
+    column=2, row=0, sticky="ew", padx=4
+)
 
 
 ### Last row
+ttk.Separator(frm, orient="horizontal").grid(
+    column=0, row=11, columnspan=6, sticky="ew", pady=(12, 8)
+)
+
 output = StringVar(root, "No compute yet")
-ttk.Label(frm, textvariable=output).grid(column=0, row=6, columnspan=6)
-ttk.Button(frm, text="Quit", command=root.destroy).grid(column=0, row=9)
+ttk.Label(frm, textvariable=output, wraplength=560, justify="left").grid(
+    column=0, row=12, columnspan=6, sticky="ew", pady=(0, 8)
+)
 
 
 root.mainloop()
