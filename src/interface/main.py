@@ -12,7 +12,7 @@ from matplotlib.figure import Figure
 ### Root
 root = tk.Tk()
 root.attributes('-type', 'dialog')
-root.geometry("600x900")
+root.geometry("1200x1300")
 
 frm = ttk.Frame(root, padding=20)
 frm.grid(row=0, column=0, sticky="nsew")
@@ -131,26 +131,61 @@ def cpt(idx: int):
 
 def compute_20_first():
     excel_default = [179.18,179.5,179.12,179.51,178.31,178.73,179.25,178.04999999999998,176.70999999999998,176.70999999999998,177.16,176.93,177.62,176.94,177.39000000000001,177.39000000000001,176.24,177.4,176.54999999999998,176.71999999999997]
-
+    q1 = [158.00,160.00,158.00,160.00,154.00,156.00,159.00,153.00,147.00,147.00,149.00,148.00,151.00,148.00,150.00,150.00,146.00,150.00,0.00,147.00]
+    q2 = [141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00,141.00]
+    q3 = [0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,142.00,0.00]
+    q4 = [140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,139.00,140.00,141.00,140.00]
+    q5 = [140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,140.00,141.00,140.00]
 
     with Pool() as p:
         result = p.map(cpt, range(20))
 
     power_pattern = re.compile(r"Puissance totale predite: (\d+\.?\d*) MW")
+    q1_pattern = re.compile(r"Turbine 1: (\d+\.?\d*) m3/s")
+    q2_pattern = re.compile(r"Turbine 2: (\d+\.?\d*) m3/s")
+    q3_pattern = re.compile(r"Turbine 3: (\d+\.?\d*) m3/s")
+    q4_pattern = re.compile(r"Turbine 4: (\d+\.?\d*) m3/s")
+    q5_pattern = re.compile(r"Turbine 5: (\d+\.?\d*) m3/s")
 
-    result = [
-        float(power_pattern.search(i.split('\n')[-2]).group(1)) # pyright: ignore
-        for i in result
-    ]
+    q1_ = [float(q1_pattern.search(i).group(1)) for i in result] # pyright: ignore
+    q2_ = [float(q2_pattern.search(i).group(1)) for i in result] # pyright: ignore
+    q3_ = [float(q3_pattern.search(i).group(1)) for i in result] # pyright: ignore
+    q4_ = [float(q4_pattern.search(i).group(1)) for i in result] # pyright: ignore
+    q5_ = [float(q5_pattern.search(i).group(1)) for i in result] # pyright: ignore
+    result = [float(power_pattern.search(i).group(1)) for i in result] # pyright: ignore
 
-    fig = Figure(figsize=(5, 4), dpi=100)
-    ax = fig.add_subplot()
+    fig = Figure(figsize=(4, 8))
+    fig.subplots_adjust(hspace=0.6)
+    ax = fig.add_subplot(3, 2, 1)
+    ax2 = fig.add_subplot(3, 2, 2)
+    ax3 = fig.add_subplot(3, 2, 3)
+    ax4 = fig.add_subplot(3, 2, 4)
+    ax5 = fig.add_subplot(3, 2, 5)
+    ax6 = fig.add_subplot(3, 2, 6)
 
+    ax.set_title(f'Puissance produite')
     ax.plot(excel_default, label='Excel (sans restrictions)', marker='o', linestyle='-', color='blue', markersize=4)
     ax.plot(result, label='Excel (avec restrictions)', marker='x', linestyle='-', color='red', markersize=4)
 
+    ax.set_xlabel('Ligne')
+    ax.set_ylabel('Puissance (MW)')
+    ax.set_xticks(range(0, len(excel_default), 2))
+
     ax.legend()
     ax.grid(True, linestyle='--', alpha=0.6)
+
+
+    for i in [(ax2, q1, q1_, 'Q1'), (ax3, q2, q2_, 'Q2'), (ax4, q3, q3_, 'Q3'), (ax5, q4, q4_, 'Q4'), (ax6, q5, q5_, 'Q5')]:
+        i[0].set_title(f'Débit {i[3]}')
+        i[0].plot(i[1], linestyle='-', color='blue')
+        i[0].plot(i[2], linestyle='-', color='red')
+
+        i[0].set_xlabel('Ligne')
+        i[0].set_ylabel('Débit')
+        i[0].set_xticks(range(0, len(excel_default), 2))
+
+        i[0].grid(True, linestyle='--', alpha=0.6)
+
 
     canvas = FigureCanvasTkAgg(fig, master=root)
     canvas.draw()
