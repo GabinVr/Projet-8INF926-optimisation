@@ -52,7 +52,7 @@ int_validator = root.register(validate(int))
 
 
 ### First row
-params_label = ttk.Label(frm, text="Global Parameters")
+params_label = ttk.Label(frm, text="Paramètres globaux")
 params_label.grid(column=0, row=0, columnspan=6, sticky="w", pady=(0, 4))
 
 ttk.Separator(frm, orient="horizontal").grid(
@@ -76,7 +76,7 @@ h_amont.bind("<FocusOut>", placeholder(h_amont, DEFAULT_H_AMONT))
 ttk.Separator(frm, orient="horizontal").grid(
     column=0, row=4, columnspan=6, sticky="ew", pady=(12, 8)
 )
-flow_label = ttk.Label(frm, text="Flow Ranges per Channel")
+flow_label = ttk.Label(frm, text="Débit par turbine")
 flow_label.grid(column=0, row=5, columnspan=6, sticky="w", pady=(0, 4))
 
 # Column headers for channels
@@ -205,13 +205,13 @@ btn_frame.grid_columnconfigure(0, weight=1)
 btn_frame.grid_columnconfigure(1, weight=1)
 btn_frame.grid_columnconfigure(2, weight=1)
 
-ttk.Button(btn_frame, text="Compute", command=compute_single).grid(
+ttk.Button(btn_frame, text="Calculer", command=compute_single).grid(
     column=0, row=0, sticky="ew", padx=4
 )
-ttk.Button(btn_frame, text="Compute from Excel", command=compute_20_first).grid(
+ttk.Button(btn_frame, text="Calculer Excel", command=compute_20_first).grid(
     column=1, row=0, sticky="ew", padx=4
 )
-ttk.Button(btn_frame, text="Quit", command=root.destroy).grid(
+ttk.Button(btn_frame, text="Quitter", command=root.destroy).grid(
     column=2, row=0, sticky="ew", padx=4
 )
 
@@ -221,7 +221,7 @@ ttk.Separator(frm, orient="horizontal").grid(
     column=0, row=11, columnspan=6, sticky="ew", pady=(12, 8)
 )
 
-output = StringVar(root, "No compute yet")
+output = StringVar(root, "...")
 ttk.Label(frm, textvariable=output, wraplength=560, justify="left").grid(
     column=0, row=12, columnspan=6, sticky="ew", pady=(0, 8)
 )
